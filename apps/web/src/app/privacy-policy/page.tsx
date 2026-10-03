@@ -10,7 +10,7 @@ export const metadata = pageMetadata({
 });
 
 export default function PrivacyPolicy() {
-  const contactFormEnabled = Boolean(process.env.RESEND_API_KEY && process.env.CONTACT_FROM_EMAIL);
+  const contactFormEnabled = site.contactFormEnabled;
   const turnstile = Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
   const analyticsName = analyticsConfig.provider === "plausible" ? "Plausible Analytics" : analyticsConfig.provider === "umami" ? "Umami" : null;
 
@@ -157,7 +157,7 @@ export default function PrivacyPolicy() {
           title: "Hosting and server logs",
           body: (
             <p>
-              The website is hosted by Vercel{processorConfig.enabled ? ", and our file-processing service runs on a separate cloud provider" : ""}. Like any web server, our hosting providers automatically
+              The website is hosted by Cloudflare{processorConfig.enabled ? ", and our file-processing service runs on a separate cloud provider" : ""}. Like any web server, our hosting providers automatically
               process technical information such as your IP address, browser type and the pages requested, to deliver the site and protect it from abuse. These logs are kept for a limited period under the
               providers&apos; own policies. Fonts and website code are served from our own domain; we don&apos;t load fonts from third-party font services.
             </p>

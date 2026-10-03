@@ -6,3 +6,8 @@ allowBuilds:
   sharp: true
   unrs-resolver: true
   esbuild: true
+  # Cloudflare's local Workers runtime (used by `wrangler` / `opennextjs-cloudflare preview`).
+  workerd: true
+minimumReleaseAgeExclude:
+  - '@opennextjs/aws@4.1.7'
+  - '@opennextjs/cloudflare@1.20.8'

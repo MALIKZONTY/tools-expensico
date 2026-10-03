@@ -2,6 +2,8 @@ import { ImageResponse } from "next/og";
 import { MARK_PATHS } from "@/components/layout/Logo";
 import { site } from "@/config/site";
 
+export const dynamic = "force-static";
+
 export const alt = `${site.name} — ${site.slogan}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";

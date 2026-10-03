@@ -1,10 +1,10 @@
 import { PROCESSOR_LIMITS, randomNonce, signToken, type ProcessorOperation } from "@expensico/processing-contract";
-import { clientIp, rateLimit, sameOrigin } from "@/lib/server/rate-limit";
+import { clientIp, rateLimit, sameOrigin } from "../rate-limit";
 
 const OPS: ProcessorOperation["kind"][] = ["office-to-pdf", "pdf-compress"];
 
 /** Issues short-lived HMAC tokens that authorise one kind of processor job. */
-export async function POST(req: Request) {
+export async function handle(req: Request) {
   const secret = process.env.PROCESSOR_SHARED_SECRET;
   if (!secret || !process.env.NEXT_PUBLIC_PROCESSOR_URL) return Response.json({ error: "Processing service not configured" }, { status: 503 });
   if (!sameOrigin(req)) return Response.json({ error: "Forbidden" }, { status: 403 });

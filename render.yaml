@@ -1,5 +1,5 @@
 # Render Blueprint for the optional processing service.
-# The web app (apps/web) is deployed to Vercel separately.
+# The web app (apps/web) is deployed to Cloudflare Workers separately (docs/DEPLOYMENT.md).
 services:
   - type: web
     name: expensico-processor
@@ -10,7 +10,7 @@ services:
     healthCheckPath: /health
     envVars:
       - key: PROCESSOR_SHARED_SECRET
-        sync: false # set the same value as PROCESSOR_SHARED_SECRET on Vercel
+        sync: false # set the same value as the Worker secret PROCESSOR_SHARED_SECRET
       - key: ALLOWED_ORIGINS
         value: https://expensico.com,https://www.expensico.com
       - key: MAX_CONCURRENT_JOBS

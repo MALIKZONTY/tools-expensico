@@ -2,7 +2,7 @@
  * Contract between the Expensico web app and the processor service.
  *
  * Runtime-agnostic: uses only Web Crypto and standard APIs, so it works in browsers,
- * Node 20+, Vercel functions and Render containers alike.
+ * Node 20+, Cloudflare Workers and the processor container alike.
  */
 
 export const PROCESSOR_API_VERSION = "v1";

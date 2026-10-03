@@ -34,6 +34,11 @@ export const site = {
   /** Public contact address shown on the contact and legal pages; also receives contact-form messages. */
   contactEmail: env("NEXT_PUBLIC_CONTACT_EMAIL") ?? "malikantuparthi@gmail.com",
   hasContactEmail: true,
+  /**
+   * Show the contact form. Pages are static, so this is a build-time switch; the Worker that
+   * receives messages also needs RESEND_API_KEY and CONTACT_FROM_EMAIL secrets (docs/DEPLOYMENT.md).
+   */
+  contactFormEnabled: env("NEXT_PUBLIC_CONTACT_FORM") === "true",
 
   /** Date the current legal documents took effect (ISO). Update when you change them. */
   legalEffectiveDate: env("NEXT_PUBLIC_LEGAL_EFFECTIVE_DATE") ?? "2026-10-03",

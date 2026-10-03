@@ -1,6 +1,6 @@
 import { contactSchema, CONTACT_TOPICS } from "@/lib/contact-schema";
 import { site } from "@/config/site";
-import { clientIp, rateLimit, sameOrigin } from "@/lib/server/rate-limit";
+import { clientIp, rateLimit, sameOrigin } from "../rate-limit";
 
 function escape(s: string) {
   return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
@@ -19,7 +19,7 @@ async function verifyTurnstile(token: string | undefined, ip: string): Promise<b
   return Boolean(data.success);
 }
 
-export async function POST(req: Request) {
+export async function handle(req: Request) {
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.CONTACT_TO_EMAIL || site.contactEmail;
   const from = process.env.CONTACT_FROM_EMAIL;

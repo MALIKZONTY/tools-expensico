@@ -17,6 +17,8 @@ interface PageMetaInput {
 export function pageMetadata({ title, description, path, absoluteTitle, type = "website", noIndex, publishedTime, modifiedTime }: PageMetaInput): Metadata {
   const url = absoluteUrl(path);
   const fullTitle = absoluteTitle ? title : `${title} | ${site.name}`;
+  // Page-level openGraph replaces the root's file-based image, so attach it explicitly.
+  const image = { url: absoluteUrl("/opengraph-image"), width: 1200, height: 630, alt: `${site.name} — ${site.slogan}` };
   return {
     title: absoluteTitle ? { absolute: title } : title,
     description,
@@ -28,12 +30,14 @@ export function pageMetadata({ title, description, path, absoluteTitle, type = "
       description,
       siteName: site.name,
       locale: site.locale,
+      images: [image],
       ...(type === "article" ? { publishedTime, modifiedTime } : {}),
     },
     twitter: {
       card: "summary_large_image",
       title: fullTitle,
       description,
+      images: [image.url],
       ...(site.twitterHandle ? { site: site.twitterHandle } : {}),
     },
     ...(noIndex ? { robots: { index: false, follow: true } } : {}),

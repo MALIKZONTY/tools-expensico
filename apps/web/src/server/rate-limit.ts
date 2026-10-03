@@ -1,4 +1,3 @@
-import "server-only";
 
 /**
  * Best-effort in-memory sliding-window rate limiter. On serverless platforms each instance
@@ -23,6 +22,9 @@ export function rateLimit(key: string, limit: number, windowMs: number): { ok: b
 }
 
 export function clientIp(req: Request): string {
+  // Cloudflare sets CF-Connecting-IP to the real visitor address (X-Forwarded-For can be spoofed).
+  const cf = req.headers.get("cf-connecting-ip");
+  if (cf) return cf.trim();
   const fwd = req.headers.get("x-forwarded-for");
   return (fwd?.split(",")[0] ?? req.headers.get("x-real-ip") ?? "unknown").trim();
 }

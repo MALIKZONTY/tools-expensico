@@ -13,8 +13,8 @@ import { getTool, type ToolMeta } from "@/registry/tools";
 
 type Params = { params: Promise<{ slug: string }> };
 
-export const dynamicParams = false;
 
+export const dynamicParams = false;
 export function generateStaticParams() {
   return GUIDES.map((g) => ({ slug: g.slug }));
 }

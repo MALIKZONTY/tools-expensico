@@ -11,7 +11,7 @@ Free online tools for files, finance, productivity and everyday work — **expen
 
 | Path | What it is |
 | --- | --- |
-| `apps/web` | Next.js 16 site (Vercel) |
+| `apps/web` | Next.js 16 site — static export on Cloudflare Workers |
 | `services/processor` | Fastify + LibreOffice + Ghostscript worker (Docker, Render) |
 | `packages/processing-contract` | Shared types, limits and HMAC job tokens |
 | `docs/` | [Architecture](docs/ARCHITECTURE.md) · [Deployment](docs/DEPLOYMENT.md) |

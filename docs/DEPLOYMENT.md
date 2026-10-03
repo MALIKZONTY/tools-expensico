@@ -1,26 +1,56 @@
 # Deployment
 
-## 1. Web app → Vercel
+## 1. Web app → Cloudflare Workers (free plan, ads allowed)
 
-1. Import the repository in Vercel and set **Root Directory** to `apps/web` (framework: Next.js).
-   The install command runs at the monorepo root automatically (pnpm workspace).
-2. Add environment variables from `apps/web/.env.example`. At minimum:
-   `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_OPERATOR_COUNTRY`, `NEXT_PUBLIC_LEGAL_JURISDICTION` and
-   `NEXT_PUBLIC_LEGAL_EFFECTIVE_DATE`. The operator name and contact email are built into
-   `src/config/site.ts`; set `NEXT_PUBLIC_OPERATOR_NAME` / `NEXT_PUBLIC_CONTACT_EMAIL` only to override them.
-   The repo pins pnpm 12 via `packageManager`; if the install step uses a different pnpm, add the
-   environment variable `ENABLE_EXPERIMENTAL_COREPACK=1` so Vercel uses the pinned version.
-3. Add `expensico.com` and `www.expensico.com` as domains; redirect `www` to the apex (or vice versa)
-   so there is one canonical host matching `NEXT_PUBLIC_SITE_URL`.
-4. Deploy. `NEXT_PUBLIC_*` values are compiled in, so redeploy after changing them.
+The site is a static export (`apps/web/out`) served by Workers static assets, plus a tiny Worker
+for `/api/*`. See ARCHITECTURE.md §11.
 
-`prebuild` copies pdf.js assets into `public/pdfjs`; they're served from your own domain.
+### One-time: put the domain on Cloudflare
+1. dash.cloudflare.com → **Add a domain** → `expensico.com` → **Free** plan.
+2. At your registrar, replace the nameservers with the two Cloudflare gives you. Wait until the
+   domain shows **Active** (minutes to a few hours).
+
+### Create the Worker from GitHub (Workers Builds)
+1. **Workers & Pages** → **Create** → **Import a repository** → choose `tools-expensico`.
+2. **Project name:** `expensico` (must match `name` in `apps/web/wrangler.jsonc`).
+3. **Build settings:**
+   - Root directory: `apps/web`
+   - Build command: `pnpm build`
+   - Deploy command: `npx wrangler deploy`
+4. **Build variables** (used at build time, compiled into the pages):
+
+   | Variable | Value |
+   | --- | --- |
+   | `PNPM_VERSION` | `12.3.4` (the build image defaults to pnpm 10) |
+   | `NEXT_PUBLIC_SITE_URL` | `https://expensico.com` |
+   | `NEXT_PUBLIC_OPERATOR_COUNTRY` | e.g. `India` |
+   | `NEXT_PUBLIC_LEGAL_JURISDICTION` | e.g. `India, with courts in <city>` |
+   | `NEXT_PUBLIC_LEGAL_EFFECTIVE_DATE` | launch date, `YYYY-MM-DD` |
+   | `NEXT_PUBLIC_ADSENSE_CLIENT` | `ca-pub-…` once AdSense approves the site (also generates `ads.txt`) |
+
+   The operator name and contact email default to `src/config/site.ts`. Changing a build variable
+   needs a new deployment (Deployments → Retry, or push a commit).
+5. **Deploy.** The site appears at `expensico.<account>.workers.dev`.
+
+### Connect the domain
+1. Worker **expensico** → **Settings → Domains & Routes → Add → Custom domain**: `expensico.com`,
+   then again for `www.expensico.com`.
+2. **Rules → Redirect Rules → Create from template → "Redirect from WWW to root"** (301), so
+   `NEXT_PUBLIC_SITE_URL` is the one canonical host.
+3. Leave **Bot Fight Mode** off and never use "I'm Under Attack" mode for normal traffic; Googlebot
+   and the AdSense crawler must be able to fetch every page.
+
+### Local check before deploying
+`pnpm build && pnpm preview` serves `out/` with Cloudflare's runtime on http://localhost:8787,
+including `_headers`, `_redirects` and the `/api` Worker. `pnpm test:e2e` runs the browser tests
+against the same setup.
 
 ### Contact form
-Create a [Resend](https://resend.com) account, verify `expensico.com` as a sending domain, then set
-`RESEND_API_KEY` and `CONTACT_FROM_EMAIL`. Messages go to the site contact email
+Create a [Resend](https://resend.com) account and verify `expensico.com` as a sending domain. Add
+`RESEND_API_KEY` and `CONTACT_FROM_EMAIL` as **Worker secrets** (Worker → Settings → Variables &
+Secrets), then set the build variable `NEXT_PUBLIC_CONTACT_FORM=true` and redeploy. Messages go to the site contact email
 (`malikantuparthi@gmail.com`, set in `src/config/site.ts`) unless `CONTACT_TO_EMAIL` overrides it.
-Until both are set the form is hidden and the page shows the contact email instead. Optionally add Cloudflare Turnstile keys.
+Until then the form is hidden and the page shows the contact email instead. Optionally add Cloudflare Turnstile keys.
 The built-in rate limiter is per server instance; add a shared store (e.g. Upstash) if you see abuse.
 
 ### Analytics (cookieless)
@@ -37,8 +67,8 @@ Enables Word/Excel/PowerPoint → PDF and server-side PDF compression.
 2. In Render, create a Blueprint from `render.yaml` (Docker, built from the repo root). Use a plan
    with at least 1 GB RAM — LibreOffice won't run on the free tier. Set `PROCESSOR_SHARED_SECRET`
    and `ALLOWED_ORIGINS`.
-3. On Vercel set `NEXT_PUBLIC_PROCESSOR_URL` (the Render URL) and the same `PROCESSOR_SHARED_SECRET`,
-   then redeploy. The server conversions and their landing pages (`/convert/docx-to-pdf`, …)
+3. In Cloudflare set the build variable `NEXT_PUBLIC_PROCESSOR_URL` (the processor URL) and the
+   Worker secret `PROCESSOR_SHARED_SECRET` (same value), then redeploy. The server conversions and their landing pages (`/convert/docx-to-pdf`, …)
    appear only now, and the privacy policy switches to describing them.
 
 Security model: the browser gets a 5-minute HMAC token for one operation from

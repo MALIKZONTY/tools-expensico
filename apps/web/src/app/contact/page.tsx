@@ -45,7 +45,7 @@ const FAQS = [
 ];
 
 export default function ContactPage() {
-  const formEnabled = Boolean(process.env.RESEND_API_KEY && process.env.CONTACT_FROM_EMAIL);
+  const formEnabled = site.contactFormEnabled;
   return (
     <Container size="narrow" className="pb-16 pt-5 sm:pt-6">
       <JsonLd data={faqJsonLd(FAQS)} />

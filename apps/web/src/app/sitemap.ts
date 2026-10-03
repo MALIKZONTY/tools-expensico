@@ -4,6 +4,8 @@ import { GUIDES } from "@/content/guides";
 import { CATEGORIES } from "@/registry/categories";
 import { TOOLS, toolPath } from "@/registry/tools";
 
+export const dynamic = "force-static";
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const launch = new Date("2026-10-03");
   const page = (path: string, priority: number, lastModified = launch): MetadataRoute.Sitemap[number] => ({ url: absoluteUrl(path), lastModified, changeFrequency: "monthly", priority });

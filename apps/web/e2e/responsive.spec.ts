@@ -28,6 +28,8 @@ const PAGES = [
 
 for (const width of WIDTHS) {
   test(`no horizontal overflow at ${width}px`, async ({ page }) => {
+    // Visits every page in PAGES, so it needs more than the default per-test budget.
+    test.setTimeout(180_000);
     await page.setViewportSize({ width, height: 900 });
     for (const path of PAGES) {
       await page.goto(path);
