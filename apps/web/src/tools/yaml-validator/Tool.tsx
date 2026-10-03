@@ -2,7 +2,6 @@
 
 import { useDeferredValue, useMemo, useState } from "react";
 import { Alert } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
 import { CodeArea, InputActions, OutputActions } from "@/components/tool/Workbench";
 import { StructuredError, yamlToData } from "@/lib/convert/structured";
 
@@ -47,14 +46,12 @@ export default function YamlValidator() {
         <div className="flex min-w-0 flex-col gap-2">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <label htmlFor="yaml-in" className="text-sm font-semibold">YAML</label>
-            <span className="flex flex-wrap items-center gap-1">
-              <Button variant="ghost" size="sm" onClick={() => setInput(ERROR_SAMPLE)}>
-                Try an example with an error
-              </Button>
-              <InputActions onText={setInput} onClear={() => setInput("")} accept=".yaml,.yml,text/yaml,text/plain" />
-            </span>
+            <InputActions onText={setInput} onClear={() => setInput("")} accept=".yaml,.yml,text/yaml,text/plain" />
           </div>
           <CodeArea id="yaml-in" label="YAML" value={input} onChange={setInput} invalid={r?.ok === false} minRows={18} />
+          <button type="button" onClick={() => setInput(ERROR_SAMPLE)} className="self-start text-sm font-medium text-brand hover:underline">
+            Try an example with an error
+          </button>
         </div>
         <div className="flex min-w-0 flex-col gap-2">
           <div className="flex flex-wrap items-center justify-between gap-2">

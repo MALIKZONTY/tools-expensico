@@ -5,7 +5,6 @@ import { CheckCircle2 } from "lucide-react";
 import { InputActions, CodeArea } from "@/components/tool/Workbench";
 import { JsonIssueAlert } from "@/components/tool/JsonIssueAlert";
 import { Alert } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
 import { parseJson } from "@/lib/json-tools";
 
 function stats(v: unknown) {
@@ -44,14 +43,12 @@ export default function JsonValidator() {
     <div className="flex flex-col gap-4 rounded-xl border border-border bg-surface p-4 shadow-sm sm:p-6">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <label htmlFor="json-validate" className="text-sm font-semibold">JSON to validate</label>
-        <span className="flex flex-wrap items-center gap-1">
-          <Button variant="ghost" size="sm" onClick={() => setInput(ERROR_SAMPLE)}>
-            Try an example with an error
-          </Button>
-          <InputActions onText={setInput} onClear={() => setInput("")} accept=".json,application/json,text/plain" />
-        </span>
+        <InputActions onText={setInput} onClear={() => setInput("")} accept=".json,application/json,text/plain" />
       </div>
       <CodeArea id="json-validate" label="JSON to validate" value={input} onChange={setInput} invalid={result?.ok === false} minRows={16} />
+      <button type="button" onClick={() => setInput(ERROR_SAMPLE)} className="self-start text-sm font-medium text-brand hover:underline">
+        Try an example with an error
+      </button>
       <div aria-live="polite">
         {result === null ? (
           <p className="text-sm text-muted">Paste JSON above — it&apos;s checked as you type.</p>
