@@ -68,4 +68,9 @@ export function securityHeaders({ dev = false, env = process.env } = {}) {
 export const STATIC_REDIRECTS = [
   { source: "/privacy", destination: "/privacy-policy" },
   { source: "/terms-of-service", destination: "/terms" },
+  // URLs from the previous app on this domain that Google had indexed (Search Console, Oct 2026).
+  { source: "/terms-and-conditions", destination: "/terms" },
+  { source: "/blog", destination: "/guides" },
+  { source: "/blog/*", destination: "/guides" },
+  { source: "/faq", destination: "/contact" },
 ];
