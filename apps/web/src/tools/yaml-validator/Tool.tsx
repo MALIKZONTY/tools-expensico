@@ -2,6 +2,7 @@
 
 import { useDeferredValue, useMemo, useState } from "react";
 import { Alert } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import { CodeArea, InputActions, OutputActions } from "@/components/tool/Workbench";
 import { StructuredError, yamlToData } from "@/lib/convert/structured";
 
@@ -16,11 +17,14 @@ services:
     depends_on: [db]
   db:
     image: postgres:17
-	volumes:
+    volumes:
       - pgdata:/var/lib/postgresql/data
 volumes:
   pgdata:
 `;
+
+/** The same file with a common mistake: a tab used for indentation (line 12). */
+const ERROR_SAMPLE = SAMPLE.replace("    volumes:", "\tvolumes:");
 
 export default function YamlValidator() {
   const [input, setInput] = useState(SAMPLE);
@@ -43,7 +47,12 @@ export default function YamlValidator() {
         <div className="flex min-w-0 flex-col gap-2">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <label htmlFor="yaml-in" className="text-sm font-semibold">YAML</label>
-            <InputActions onText={setInput} onClear={() => setInput("")} accept=".yaml,.yml,text/yaml,text/plain" />
+            <span className="flex flex-wrap items-center gap-1">
+              <Button variant="ghost" size="sm" onClick={() => setInput(ERROR_SAMPLE)}>
+                Try an example with an error
+              </Button>
+              <InputActions onText={setInput} onClear={() => setInput("")} accept=".yaml,.yml,text/yaml,text/plain" />
+            </span>
           </div>
           <CodeArea id="yaml-in" label="YAML" value={input} onChange={setInput} invalid={r?.ok === false} minRows={18} />
         </div>

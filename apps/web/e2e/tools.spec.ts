@@ -225,3 +225,15 @@ test("light theme is the default even when the device prefers dark", async ({ pa
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
 });
+
+test("validators open with a valid sample and can show an error example", async ({ page }) => {
+  await page.goto("/developer/yaml-validator");
+  await expect(page.getByText("Valid YAML", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Try an example with an error" }).click();
+  await expect(page.getByText(/Invalid YAML — line 12/)).toBeVisible();
+
+  await page.goto("/developer/json-validator");
+  await expect(page.getByText("Valid JSON", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Try an example with an error" }).click();
+  await expect(appAlert(page)).toContainText(/trailing comma|line 6/i);
+});

@@ -5,6 +5,7 @@ import { CheckCircle2 } from "lucide-react";
 import { InputActions, CodeArea } from "@/components/tool/Workbench";
 import { JsonIssueAlert } from "@/components/tool/JsonIssueAlert";
 import { Alert } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 import { parseJson } from "@/lib/json-tools";
 
 function stats(v: unknown) {
@@ -23,8 +24,18 @@ function stats(v: unknown) {
   return { objects, arrays, values, depth };
 }
 
+const SAMPLE = `{
+  "name": "Expensico",
+  "free": true,
+  "categories": ["PDF", "Convert", "Files", "Finance", "Productivity", "Developer"],
+  "notes": { "storedIn": "browser", "uploaded": false }
+}`;
+
+/** A common mistake: a trailing comma before the closing brace. */
+const ERROR_SAMPLE = SAMPLE.replace('"uploaded": false }\n}', '"uploaded": false },\n}');
+
 export default function JsonValidator() {
-  const [input, setInput] = useState('{\n  "name": "Expensico",\n  "tools": 100,\n  "free": true,\n}');
+  const [input, setInput] = useState(SAMPLE);
   const deferred = useDeferredValue(input);
   const result = useMemo(() => (deferred.trim() ? parseJson(deferred) : null), [deferred]);
   const s = result?.ok ? stats(result.value) : null;
@@ -33,7 +44,12 @@ export default function JsonValidator() {
     <div className="flex flex-col gap-4 rounded-xl border border-border bg-surface p-4 shadow-sm sm:p-6">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <label htmlFor="json-validate" className="text-sm font-semibold">JSON to validate</label>
-        <InputActions onText={setInput} onClear={() => setInput("")} accept=".json,application/json,text/plain" />
+        <span className="flex flex-wrap items-center gap-1">
+          <Button variant="ghost" size="sm" onClick={() => setInput(ERROR_SAMPLE)}>
+            Try an example with an error
+          </Button>
+          <InputActions onText={setInput} onClear={() => setInput("")} accept=".json,application/json,text/plain" />
+        </span>
       </div>
       <CodeArea id="json-validate" label="JSON to validate" value={input} onChange={setInput} invalid={result?.ok === false} minRows={16} />
       <div aria-live="polite">
