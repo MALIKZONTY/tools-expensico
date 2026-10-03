@@ -55,6 +55,13 @@ export default function ContactPage() {
         Found a bug, need a tool we don&apos;t have, spotted an outdated rate, or have a question about how your data is handled? Send us a message — every message is read by the person who builds
         Expensico, {site.operator.name}. We usually reply within a few working days.
       </p>
+      <div className="mt-6 flex items-center gap-3 rounded-xl border border-border bg-surface p-3 pr-4">
+        {/* eslint-disable-next-line @next/next/no-img-element -- static export; the image is already sized */}
+        <img src={site.operator.photo} alt="" width={48} height={48} className="size-12 shrink-0 rounded-full object-cover" />
+        <p className="text-sm text-muted">
+          <span className="font-semibold text-fg">{site.operator.name}</span> · reads and replies to every message personally.
+        </p>
+      </div>
 
       <ul className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
         {REASONS.map((r) => (

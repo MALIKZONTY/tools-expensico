@@ -27,6 +27,8 @@ export const site = {
   operator: {
     name: env("NEXT_PUBLIC_OPERATOR_NAME") ?? "Antuparthi Manoha Malik Paul",
     bio: "A B.Tech graduate and software professional",
+    /** Square portrait in public/ (480×480). */
+    photo: "/images/malik-paul.jpg",
     country: env("NEXT_PUBLIC_OPERATOR_COUNTRY") ?? "[Country of operation]",
     jurisdiction: env("NEXT_PUBLIC_LEGAL_JURISDICTION") ?? "[Governing law / jurisdiction]",
   },

@@ -40,8 +40,21 @@ export default async function GuidePage({ params }: Params) {
         <div className="mt-6 grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_18rem]">
           <article className="prose-ex min-w-0">
             <h1 className="text-[1.875rem] font-semibold leading-tight tracking-tight text-fg sm:text-[2.25rem]">{g.title}</h1>
-            <p className="!mt-3 text-sm">
-              By <Link href="/about">{site.operator.name}</Link> · {g.updated ? "Updated" : "Published"} {date} · {g.readingMinutes} min read
+            <p className="not-prose !mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted">
+              {/* eslint-disable-next-line @next/next/no-img-element -- static export; the image is already sized */}
+              <img src={site.operator.photo} alt="" width={32} height={32} className="size-8 rounded-full object-cover" />
+              <span>
+                By{" "}
+                <Link href="/about" className="font-medium text-fg hover:text-brand hover:underline">
+                  {site.operator.name}
+                </Link>
+              </span>
+              <span aria-hidden>·</span>
+              <span>
+                {g.updated ? "Updated" : "Published"} {date}
+              </span>
+              <span aria-hidden>·</span>
+              <span>{g.readingMinutes} min read</span>
             </p>
             <p className="text-lg">{g.description}</p>
             <Body />

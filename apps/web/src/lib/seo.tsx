@@ -116,7 +116,7 @@ export function articleJsonLd(input: { title: string; description: string; path:
     url: absoluteUrl(input.path),
     datePublished: input.published,
     dateModified: input.modified ?? input.published,
-    author: { "@type": "Person", name: site.operator.name, url: absoluteUrl("/about") },
+    author: { "@type": "Person", name: site.operator.name, url: absoluteUrl("/about"), image: absoluteUrl(site.operator.photo) },
     publisher: { "@type": "Organization", name: site.name, url: site.url },
     mainEntityOfPage: absoluteUrl(input.path),
   };

@@ -16,3 +16,6 @@ test-results
 # Playwright
 **/blob-report/
 **/playwright/.cache/
+
+# Local screenshots / source photos (optimised copies live in apps/web/public/images)
+/Screenshot*.png

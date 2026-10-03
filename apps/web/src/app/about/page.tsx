@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { Container } from "@/components/layout/Container";
-import { processorConfig, site } from "@/config/site";
+import { absoluteUrl, processorConfig, site } from "@/config/site";
 import { GUIDES } from "@/content/guides";
 import { CONVERSIONS, isConversionAvailable } from "@/lib/convert/catalog";
-import { pageMetadata } from "@/lib/seo";
+import { JsonLd, pageMetadata } from "@/lib/seo";
 import { CATEGORIES } from "@/registry/categories";
 import { TOOLS, toolsInCategory } from "@/registry/tools";
 
@@ -26,6 +26,22 @@ export default function About() {
 
   return (
     <Container size="narrow" className="pb-16 pt-5 sm:pt-6">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "AboutPage",
+          url: absoluteUrl("/about"),
+          mainEntity: {
+            "@type": "Person",
+            name: site.operator.name,
+            description: site.operator.bio,
+            image: absoluteUrl(site.operator.photo),
+            email: `mailto:${site.contactEmail}`,
+            url: absoluteUrl("/about"),
+            worksFor: { "@type": "Organization", name: site.name, url: site.url },
+          },
+        }}
+      />
       <Breadcrumbs items={[{ name: "About", href: "/about" }]} />
       <article className="prose-ex mt-6">
         <h1 className="text-[2rem] font-semibold leading-tight tracking-tight text-fg">About Expensico</h1>
@@ -93,6 +109,25 @@ export default function About() {
         </ul>
 
         <h2>Who runs Expensico</h2>
+        <div className="not-prose my-6 flex flex-col items-center gap-5 rounded-2xl border border-border bg-surface p-6 text-center sm:flex-row sm:items-center sm:text-left">
+          {/* eslint-disable-next-line @next/next/no-img-element -- static export; the image is already sized */}
+          <img
+            src={site.operator.photo}
+            alt={`Photo of ${site.operator.name}`}
+            width={112}
+            height={112}
+            className="size-28 shrink-0 rounded-full object-cover ring-4 ring-brand-soft"
+          />
+          <div>
+            <p className="text-lg font-semibold text-fg">{site.operator.name}</p>
+            <p className="mt-0.5 text-sm text-muted">Founder &amp; developer of Expensico · {site.operator.bio}</p>
+            <p className="mt-3 text-sm">
+              <a href={`mailto:${site.contactEmail}`} className="font-medium text-brand hover:underline">
+                {site.contactEmail}
+              </a>
+            </p>
+          </div>
+        </div>
         <p>
           Expensico is built and run by <strong>{site.operator.name}</strong>, {site.operator.bio.charAt(0).toLowerCase() + site.operator.bio.slice(1)}. The site is an independent project: it is not
           owned by a bank, broker, software vendor or any other company whose products it might be expected to promote, and no tool is designed to steer you towards a particular financial product.
