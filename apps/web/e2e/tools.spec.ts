@@ -237,3 +237,38 @@ test("validators open with a valid sample and can show an error example", async 
   await page.getByRole("button", { name: "Try an example with an error" }).click();
   await expect(appAlert(page)).toContainText(/trailing comma|line 6/i);
 });
+
+test("homepage search suggestions are not clipped by the hero", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto("/");
+  await page.getByRole("combobox").first().fill("word co");
+  const option = page.getByRole("option", { name: /Word Counter/ }).first();
+  await expect(option).toBeVisible();
+  // The whole suggestion row must be painted: the topmost element at its bottom edge belongs to it.
+  const box = (await option.boundingBox())!;
+  const insideOption = await page.evaluate(({ x, y }) => {
+    const el = document.elementFromPoint(x, y);
+    return Boolean(el?.closest('[role="option"]'));
+  }, { x: box.x + 20, y: box.y + box.height - 4 });
+  expect(insideOption).toBe(true);
+});
+
+test("category menu opens on hover and closes when the pointer leaves it", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/");
+  const menu = page.locator("#menu-pdf");
+  await page.getByRole("button", { name: "PDF Tools" }).hover();
+  await expect(menu).toBeVisible();
+  // Moving into the card keeps it open.
+  await page.mouse.move(720, 250, { steps: 8 });
+  await page.waitForTimeout(400);
+  await expect(menu).toBeVisible();
+  // Moving to the empty area beside the card closes it.
+  await page.mouse.move(15, 300, { steps: 8 });
+  await expect(menu).toBeHidden();
+  // Hover again, then leave downwards onto the page.
+  await page.getByRole("button", { name: "PDF Tools" }).hover();
+  await expect(menu).toBeVisible();
+  await page.mouse.move(720, 880, { steps: 12 });
+  await expect(menu).toBeHidden();
+});

@@ -56,54 +56,54 @@ export function MegaMenu({ id, menu, onNavigate, onPointerEnter, onPointerLeave 
   const links = menu.columns.flatMap((c) => c.links);
 
   return (
-    // The top padding is a hover bridge between the header button and the card.
-    <div id={id} onPointerEnter={onPointerEnter} onPointerLeave={onPointerLeave} className="absolute inset-x-0 top-full px-4 pt-2 sm:px-6 lg:px-8">
-      <div className="mega-panel mx-auto flex max-h-[calc(100dvh-6rem)] max-w-6xl overflow-hidden rounded-2xl border border-border bg-surface shadow-[0_24px_60px_-20px_rgb(0_0_0/0.25)]">
-        <aside className={cn("flex w-64 shrink-0 flex-col bg-gradient-to-b to-surface p-6", asideTone[menu.id])}>
-          <ToolIcon name={`@category-${menu.id}`} category={menu.id} size="lg" />
-          <p className="mt-4 text-lg font-bold tracking-tight text-fg">{menu.title}</p>
-          <p className="mt-1.5 text-sm leading-relaxed text-muted">{menu.description}</p>
-          <div className="mt-auto flex flex-col gap-2 pt-6">
-            <Link
-              href={menu.href}
-              onClick={onNavigate}
-              className="inline-flex h-10 items-center justify-center gap-1.5 rounded-lg bg-fg px-4 text-sm font-semibold text-bg transition-opacity hover:opacity-90"
-            >
-              View all {menu.total} <ArrowRight aria-hidden className="size-4" />
-            </Link>
-            {isConvert && (
-              <Link href="/convert" onClick={onNavigate} className="text-center text-sm font-medium text-brand hover:underline">
-                Universal file converter
+    // Only the card (plus the small gap above it, a hover bridge from the header button) counts as
+    // "inside" the menu; the full-width positioning layer ignores the pointer, so moving into the
+    // empty space beside or below the card closes the menu.
+    <div className="pointer-events-none absolute inset-x-0 top-full px-4 sm:px-6 lg:px-8">
+      <div id={id} onPointerEnter={onPointerEnter} onPointerLeave={onPointerLeave} className="pointer-events-auto mx-auto max-w-6xl pt-2">
+        <div className="mega-panel flex max-h-[calc(100dvh-6rem)] overflow-hidden rounded-2xl border border-border bg-surface shadow-[0_24px_60px_-20px_rgb(0_0_0/0.25)]">
+          <aside className={cn("flex w-64 shrink-0 flex-col bg-gradient-to-b to-surface p-6", asideTone[menu.id])}>
+            <ToolIcon name={`@category-${menu.id}`} category={menu.id} size="lg" />
+            <p className="mt-4 text-lg font-bold tracking-tight text-fg">{menu.title}</p>
+            <p className="mt-1.5 text-sm leading-relaxed text-muted">{menu.description}</p>
+            <div className="mt-auto flex flex-col gap-2 pt-6">
+              <Link href={menu.href} onClick={onNavigate} className="inline-flex h-10 items-center justify-center gap-1.5 rounded-lg bg-fg px-4 text-sm font-semibold text-bg transition-opacity hover:opacity-90">
+                View all {menu.total} <ArrowRight aria-hidden className="size-4" />
               </Link>
+              {isConvert && (
+                <Link href="/convert" onClick={onNavigate} className="text-center text-sm font-medium text-brand hover:underline">
+                  Universal file converter
+                </Link>
+              )}
+            </div>
+          </aside>
+
+          <div className="min-w-0 flex-1 overflow-y-auto p-4">
+            {isConvert ? (
+              <div className="columns-3 gap-x-4 p-2">
+                {menu.columns.map((col) => (
+                  <div key={col.id} className="mb-5 min-w-0 break-inside-avoid">
+                    <p className="px-2 text-xs font-semibold uppercase tracking-wide text-subtle">{col.title}</p>
+                    <ul className="mt-2 grid grid-cols-1 gap-0.5">
+                      {col.links.map((l) => (
+                        <li key={l.href}>
+                          <ConvertItem link={l} onNavigate={onNavigate} />
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <ul className="grid grid-cols-3 gap-1">
+                {links.map((l) => (
+                  <li key={l.href} className="min-w-0">
+                    <ToolItem link={l} onNavigate={onNavigate} />
+                  </li>
+                ))}
+              </ul>
             )}
           </div>
-        </aside>
-
-        <div className="min-w-0 flex-1 overflow-y-auto p-4">
-          {isConvert ? (
-            <div className="columns-3 gap-x-4 p-2">
-              {menu.columns.map((col) => (
-                <div key={col.id} className="mb-5 min-w-0 break-inside-avoid">
-                  <p className="px-2 text-xs font-semibold uppercase tracking-wide text-subtle">{col.title}</p>
-                  <ul className="mt-2 grid grid-cols-1 gap-0.5">
-                    {col.links.map((l) => (
-                      <li key={l.href}>
-                        <ConvertItem link={l} onNavigate={onNavigate} />
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <ul className="grid grid-cols-3 gap-1">
-              {links.map((l) => (
-                <li key={l.href} className="min-w-0">
-                  <ToolItem link={l} onNavigate={onNavigate} />
-                </li>
-              ))}
-            </ul>
-          )}
         </div>
       </div>
     </div>

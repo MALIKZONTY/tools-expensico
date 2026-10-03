@@ -67,7 +67,7 @@ export default function HomePage() {
     <>
       <JsonLd data={websiteJsonLd()} />
 
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-x-clip">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 [mask-image:linear-gradient(to_bottom,black_55%,transparent)] [background:radial-gradient(48rem_20rem_at_50%_-6rem,color-mix(in_srgb,var(--brand-accent)_16%,transparent),transparent_70%),radial-gradient(28rem_18rem_at_0%_70%,color-mix(in_srgb,var(--brand-accent)_10%,transparent),transparent_70%),radial-gradient(28rem_18rem_at_100%_65%,color-mix(in_srgb,var(--brand-accent)_10%,transparent),transparent_70%)]"
