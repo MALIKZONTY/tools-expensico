@@ -1,0 +1,17 @@
+# Render Blueprint for the optional processing service.
+# The web app (apps/web) is deployed to Vercel separately.
+services:
+  - type: web
+    name: expensico-processor
+    runtime: docker
+    dockerfilePath: ./services/processor/Dockerfile
+    dockerContext: .
+    plan: standard # LibreOffice needs ~1 GB RAM; the free plan is too small
+    healthCheckPath: /health
+    envVars:
+      - key: PROCESSOR_SHARED_SECRET
+        sync: false # set the same value as PROCESSOR_SHARED_SECRET on Vercel
+      - key: ALLOWED_ORIGINS
+        value: https://expensico.com,https://www.expensico.com
+      - key: MAX_CONCURRENT_JOBS
+        value: "2"

@@ -1,0 +1,18 @@
+node_modules
+.next
+out
+dist
+coverage
+playwright-report
+test-results
+.env*.local
+.env
+.DS_Store
+*.tsbuildinfo
+.vercel
+# pdf.js assets copied at build time by apps/web/scripts/copy-pdfjs-assets.mjs
+**/public/pdfjs/
+
+# Playwright
+**/blob-report/
+**/playwright/.cache/

@@ -1,0 +1,14 @@
+{
+  "name": "expensico",
+  "private": true,
+  "packageManager": "pnpm@12.3.4",
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "pnpm -r lint",
+    "test:e2e": "pnpm --filter web test:e2e",
+    "check:launch": "pnpm --filter web check:launch"
+  }
+}
