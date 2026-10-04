@@ -19,7 +19,8 @@ const nextConfig: NextConfig = {
       return [{ source: "/:path*", headers: securityHeaders({ dev: true }) }];
     },
     async redirects() {
-      return STATIC_REDIRECTS.map((r) => ({ ...r, permanent: true }));
+      // Sources use Cloudflare's `_redirects` syntax; Next.js spells a trailing wildcard `:path*`.
+      return STATIC_REDIRECTS.map((r) => ({ ...r, source: r.source.replace(/\/\*$/, "/:path*"), permanent: true }));
     },
   }),
 };
