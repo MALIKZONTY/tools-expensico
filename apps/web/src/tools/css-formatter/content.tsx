@@ -12,7 +12,28 @@ const content: ToolContent = {
       body: <p>Minifying removes comments and every whitespace character that doesn&apos;t affect meaning. It&apos;s deliberately conservative: spaces inside <code>calc()</code>, before pseudo-classes in descendant selectors, and inside strings and <code>url()</code> are kept. It doesn&apos;t merge rules or shorten colours, so the result is always equivalent to your input.</p>,
     },
   ],
+  example: {
+    heading: "Example",
+    body: (
+      <>
+        <p>Minified CSS from a website, which is hard to read:</p>
+        <pre><code>{`.btn{padding:8px 16px;border-radius:6px}.btn:hover{background:#0d7a63;color:#fff}`}</code></pre>
+        <p>After Beautify:</p>
+        <pre><code>{`.btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+}
+.btn:hover {
+  background: #0d7a63;
+  color: #fff;
+}`}</code></pre>
+        <p>Minify does the reverse, which is what you want before putting hand-written CSS on a live site: fewer bytes for every visitor to download.</p>
+      </>
+    ),
+  },
   faqs: [
+    { q: "Is my code sent anywhere?", a: "No. Formatting and minifying run in your browser, so private stylesheets stay on your device." },
+    { q: "Can I open a file?", a: "Yes. Open a .css, .scss or .less file, or paste the code directly." },
     { q: "Why does minify fail on invalid CSS?", a: "The stylesheet is parsed before minifying so broken CSS is reported instead of silently producing broken output." },
     { q: "Should I minify SCSS?", a: "Browsers can't read SCSS — compile it to CSS first, then minify the CSS." },
   ],

@@ -32,7 +32,26 @@ const content: ToolContent = {
       ),
     },
   ],
+  example: {
+    heading: "Example: a ₹60,000 monthly take-home",
+    body: (
+      <>
+        <p>By the 50/30/20 guideline, this income would split into:</p>
+        <ul>
+          <li><strong>Needs: ₹30,000</strong> — for example rent ₹18,000, groceries ₹6,000, utilities and phone ₹3,000, health insurance and transport ₹3,000.</li>
+          <li><strong>Wants: ₹18,000</strong> — eating out, subscriptions, shopping and weekend plans.</li>
+          <li><strong>Savings: ₹12,000</strong> — say a ₹7,000 SIP and ₹5,000 into an emergency fund until it covers 3–6 months of needs.</li>
+        </ul>
+        <p>
+          If rent alone is ₹25,000, needs will pass 50%. The calculator shows each group&apos;s share against its guide line and marks it when needs or wants run over, or when savings fall short.
+          Trim wants first and keep savings as close to 20% as you can.
+        </p>
+      </>
+    ),
+  },
   faqs: [
+    { q: "What does “Unallocated” mean?", a: "Income you haven't assigned to anything yet. Give every rupee a job — usually by adding it to savings — so it doesn't disappear into unplanned spending. If you see “Over budget by” instead, your plan spends more than you earn." },
+    { q: "Can I add more than one income?", a: "Yes. Add each income source, such as salary, rent received or freelance work. Use take-home amounts after tax and deductions." },
     { q: "Should EMIs count as needs?", a: "Minimum EMIs on existing loans are needs. Extra payments to clear debt early count as savings, because they improve your net worth." },
     { q: "Where is my budget stored?", a: "Only in this browser's local storage. Nothing is uploaded. Clearing site data or using a different browser will start a fresh budget." },
   ],

@@ -18,7 +18,22 @@ const content: ToolContent = {
       ),
     },
   ],
-  faqs: [{ q: "Can I rotate by any angle?", a: "PDF page rotation only supports multiples of 90°. To straighten a slightly skewed scan, use scanning software with deskew." }],
+  example: {
+    heading: "Example: a scanned contract with two landscape pages",
+    body: (
+      <p>
+        Open the PDF and look at the thumbnails. Pages 4 and 9 are tables scanned sideways, so use the arrows under just those two pages until they read normally. Every other page stays as it is.
+        Select <strong>Save 2 rotated pages</strong>, and the file downloads as <code>contract-rotated.pdf</code>. If the whole document came out upside down, use <strong>Rotate all right</strong>{" "}
+        twice instead. <strong>Reset</strong> undoes everything before you save.
+      </p>
+    ),
+  },
+  faqs: [
+    { q: "Can I rotate by any angle?", a: "PDF page rotation only supports multiples of 90°. To straighten a slightly skewed scan, use scanning software with deskew." },
+    { q: "Is my PDF uploaded?", a: "No. The rotation is written into a new copy of the PDF in your browser." },
+    { q: "Does rotating change the file size?", a: "Hardly at all. Only a small rotation setting on each page changes; text and images aren't touched or re-compressed." },
+    { q: "Why can't I open my PDF?", a: "Password-protected or encrypted PDFs can't be changed. Remove the protection in a PDF reader that knows the password, save a copy, and try that. PDFs up to 300 MB are supported." },
+  ],
 };
 
 export default content;

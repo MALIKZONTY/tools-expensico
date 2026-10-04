@@ -20,9 +20,23 @@ const content: ToolContent = {
       ),
     },
   ],
+  example: {
+    heading: "What the report shows",
+    body: (
+      <>
+        <p>For every file you get its name and extension, the detected type and <em>how</em> it was detected (file signature, container structure, text content, or extension only), the type your browser guessed, the exact size in bytes, the last-modified date, whether it&apos;s text or binary, and its first 32 bytes in hexadecimal.</p>
+        <p>
+          If the contents don&apos;t match the extension — say <code>invoice.pdf</code> that is really a ZIP or a Windows program — you&apos;ll see a warning. That mismatch is a common trick in phishing
+          emails, so treat such files with care. Files of any size up to 2 GB can be checked.
+        </p>
+      </>
+    ),
+  },
   faqs: [
     { q: "Is my file uploaded?", a: "No. Only the first few kilobytes are read in your browser (the whole file if you ask for a checksum)." },
     { q: "Can it detect viruses?", a: "No. It identifies file types; it isn't an antivirus scanner." },
+    { q: "How do I verify a checksum?", a: "Calculate the SHA-256 here, copy it, and compare it with the checksum published by whoever provided the file. If even one character differs, the file isn't the one they published." },
+    { q: "What if the type is “Unrecognised”?", a: "The file doesn't start with a signature this tool knows. It may be a specialised format, an encrypted file, or a damaged download. The hex bytes shown can help you search for the format." },
   ],
 };
 

@@ -19,6 +19,26 @@ const content: ToolContent = {
         </ul>
       ),
     },
+    {
+      heading: "When it's useful",
+      body: (
+        <ul>
+          <li>Reading a Word attachment on a computer or Chromebook without Microsoft Office.</li>
+          <li>Checking what a document says before deciding whether to download Office or ask for a PDF.</li>
+          <li>Getting the plain text out of a document to paste into an email, a form or another app.</li>
+          <li>Counting the words in an assignment or article — the total appears next to the file name.</li>
+        </ul>
+      ),
+    },
+    {
+      heading: "Copying the text",
+      body: (
+        <p>
+          Copy and Download give you the document as plain text, with headings and paragraphs separated by blank lines and the formatting removed. That&apos;s usually what you want when pasting into a
+          web form. To keep headings, lists and tables, select the text in the preview and copy it instead — most editors keep that formatting when you paste. Files up to 50 MB can be opened.
+        </p>
+      ),
+    },
     ...(processorConfig.enabled
       ? [
           {
@@ -28,7 +48,12 @@ const content: ToolContent = {
         ]
       : []),
   ],
-  faqs: [{ q: "Is my document uploaded?", a: "No. It's converted and displayed in your browser." }],
+  faqs: [
+    { q: "Is my document uploaded?", a: "No. It's converted and displayed in your browser." },
+    { q: "Can I edit the document?", a: "No. This is a viewer. To edit a .docx file without Office, open it in a free editor such as LibreOffice Writer or Google Docs." },
+    { q: "Why does the layout look different from Word?", a: "The viewer shows the content in a readable, screen-friendly layout rather than reproducing pages. Fonts, margins, columns, text boxes, headers and footers are simplified." },
+    { q: "Can it open password-protected documents?", a: "No. Encrypted .docx files can only be opened with the password in Word or a compatible editor." },
+  ],
 };
 
 export default content;
