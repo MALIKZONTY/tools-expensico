@@ -70,6 +70,7 @@ export function InputActions({ onText, onClear, accept = ".txt,.json,.xml,.yaml,
         className="sr-only"
         tabIndex={-1}
         aria-hidden
+        aria-label="Open file"
         onChange={async (e) => {
           const f = e.target.files?.[0];
           e.target.value = "";

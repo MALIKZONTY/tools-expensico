@@ -163,6 +163,7 @@ export function FileDropzone({ accept, multiple, maxBytes, onFiles, disabled, la
           className="sr-only"
           tabIndex={-1}
           aria-hidden
+          aria-label="Choose files"
           onChange={(e) => {
             handle(e.target.files);
             e.target.value = "";

@@ -133,7 +133,7 @@ export function Header({ menus }: { menus: HeaderMenus }) {
                 <button
                   type="button"
                   aria-expanded={open === c.id}
-                  aria-controls={`menu-${c.id}`}
+                  aria-controls={open === c.id ? `menu-${c.id}` : undefined}
                   onClick={() => clickToggle(c.id)}
                   onPointerEnter={(e) => e.pointerType === "mouse" && hoverOpen(c.id)}
                   onPointerLeave={(e) => e.pointerType === "mouse" && hoverClose()}
@@ -177,7 +177,7 @@ export function Header({ menus }: { menus: HeaderMenus }) {
             onClick={() => setMenuOpen((o) => !o)}
             className="inline-flex size-10 items-center justify-center rounded-md text-fg hover:bg-surface-2 lg:hidden"
             aria-expanded={menuOpen}
-            aria-controls="mobile-nav"
+            aria-controls={menuOpen ? "mobile-nav" : undefined}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
           >
             {menuOpen ? <X aria-hidden className="size-5" /> : <Menu aria-hidden className="size-5" />}

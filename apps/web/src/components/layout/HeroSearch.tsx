@@ -22,6 +22,9 @@ export function HeroSearch({ className }: { className?: string }) {
     return () => document.removeEventListener("mousedown", onDown);
   }, []);
 
+  // aria-controls must name an element that exists, and the listbox only mounts with results.
+  const listShown = open && !search.loading && search.results.length > 0;
+
   return (
     <div ref={wrapRef} className={cn("relative w-full", className)}>
       <form
@@ -41,9 +44,9 @@ export function HeroSearch({ className }: { className?: string }) {
           type="search"
           role="combobox"
           aria-expanded={open}
-          aria-controls={listId}
+          aria-controls={listShown ? listId : undefined}
           aria-autocomplete="list"
-          aria-activedescendant={open && search.results.length ? `${listId}-opt-${search.activeIndex}` : undefined}
+          aria-activedescendant={listShown ? `${listId}-opt-${search.activeIndex}` : undefined}
           placeholder="Search for a tool…  e.g. PDF to JPG, EMI, JSON"
           autoComplete="off"
           spellCheck={false}

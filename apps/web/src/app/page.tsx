@@ -6,8 +6,8 @@ import { HeroSearch } from "@/components/layout/HeroSearch";
 import { ToolExplorer, type ExplorerFilter } from "@/components/tool/ToolExplorer";
 import { ToolLinkCard } from "@/components/tool/ToolGrid";
 import { GUIDES } from "@/content/guides";
-import { processorConfig, site } from "@/config/site";
-import { JsonLd, pageMetadata, websiteJsonLd } from "@/lib/seo";
+import { adsConfig, processorConfig, site } from "@/config/site";
+import { JsonLd, organizationJsonLd, pageMetadata, websiteJsonLd } from "@/lib/seo";
 import { CATEGORIES, type CategoryId } from "@/registry/categories";
 import { TOOLS, getTool, toolsInCategory, type ToolMeta } from "@/registry/tools";
 
@@ -40,7 +40,9 @@ const FILTER_LABEL: Record<CategoryId, string> = {
 const BENEFITS = [
   { icon: UserX, title: "No signup", body: "Open a tool and use it — no account, no email." },
   { icon: Laptop, title: "Runs in your browser", body: "Most tools process files on your device; nothing is uploaded." },
-  { icon: LockKeyhole, title: "No tracking cookies", body: "Private by default. We never sell or look at your files." },
+  adsConfig.enabled
+    ? { icon: LockKeyhole, title: "Private by default", body: "We never sell or look at your files. Ads are labelled and stay out of the tools." }
+    : { icon: LockKeyhole, title: "No tracking cookies", body: "Private by default. We never sell or look at your files." },
   { icon: BadgeCheck, title: "Honest results", body: "Every conversion says how faithful it is. No fake buttons." },
 ];
 
@@ -65,7 +67,7 @@ export default function HomePage() {
 
   return (
     <>
-      <JsonLd data={websiteJsonLd()} />
+      <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
 
       <section className="relative overflow-x-clip">
         <div

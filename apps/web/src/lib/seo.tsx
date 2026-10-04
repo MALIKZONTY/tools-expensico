@@ -93,7 +93,31 @@ export function webAppJsonLd(input: { name: string; description: string; path: s
     operatingSystem: "Any (runs in a web browser)",
     isAccessibleForFree: true,
     offers: { "@type": "Offer", price: "0", priceCurrency: "INR" },
-    publisher: { "@type": "Organization", name: site.name, url: site.url },
+    publisher: orgRef(),
+  };
+}
+
+/** Stable identifier for the brand entity; every publisher/worksFor points here. */
+export const ORG_ID = `${site.url}/#organization`;
+
+export function orgRef() {
+  return { "@id": ORG_ID };
+}
+
+/** The one full description of the brand. Rendered on the homepage; elsewhere referenced by @id. */
+export function organizationJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": ORG_ID,
+    name: site.name,
+    url: site.url,
+    logo: absoluteUrl("/icon.svg"),
+    description: site.description,
+    slogan: site.slogan,
+    email: site.contactEmail,
+    founder: { "@type": "Person", name: site.operator.name, url: absoluteUrl("/about"), image: absoluteUrl(site.operator.photo) },
+    ...(site.sameAs.length ? { sameAs: site.sameAs } : {}),
   };
 }
 
@@ -101,9 +125,11 @@ export function websiteJsonLd() {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
+    "@id": `${site.url}/#website`,
     name: site.name,
     url: site.url,
     description: site.description,
+    publisher: orgRef(),
   };
 }
 
@@ -117,7 +143,7 @@ export function articleJsonLd(input: { title: string; description: string; path:
     datePublished: input.published,
     dateModified: input.modified ?? input.published,
     author: { "@type": "Person", name: site.operator.name, url: absoluteUrl("/about"), image: absoluteUrl(site.operator.photo) },
-    publisher: { "@type": "Organization", name: site.name, url: site.url },
+    publisher: orgRef(),
     mainEntityOfPage: absoluteUrl(input.path),
   };
 }

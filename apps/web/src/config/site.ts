@@ -42,6 +42,12 @@ export const site = {
    */
   contactFormEnabled: env("NEXT_PUBLIC_CONTACT_FORM") === "true",
 
+  /**
+   * The brand's profiles on other sites (LinkedIn, GitHub, Product Hunt, Wikidata…), emitted as
+   * Organization.sameAs. Comma-separated in NEXT_PUBLIC_SAME_AS. Only list profiles that exist.
+   */
+  sameAs: (env("NEXT_PUBLIC_SAME_AS") ?? "").split(",").map((u) => u.trim()).filter(Boolean),
+
   /** Date the current legal documents took effect (ISO). Update when you change them. */
   legalEffectiveDate: env("NEXT_PUBLIC_LEGAL_EFFECTIVE_DATE") ?? "2026-10-03",
 } as const;

@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { Container } from "@/components/layout/Container";
-import { absoluteUrl, processorConfig, site } from "@/config/site";
+import { absoluteUrl, adsConfig, processorConfig, site } from "@/config/site";
 import { GUIDES } from "@/content/guides";
 import { CONVERSIONS, isConversionAvailable } from "@/lib/convert/catalog";
-import { JsonLd, pageMetadata } from "@/lib/seo";
+import { JsonLd, orgRef, pageMetadata } from "@/lib/seo";
 import { CATEGORIES } from "@/registry/categories";
 import { TOOLS, toolsInCategory } from "@/registry/tools";
 
@@ -38,7 +38,7 @@ export default function About() {
             image: absoluteUrl(site.operator.photo),
             email: `mailto:${site.contactEmail}`,
             url: absoluteUrl("/about"),
-            worksFor: { "@type": "Organization", name: site.name, url: site.url },
+            worksFor: orgRef(),
           },
         }}
       />
@@ -167,7 +167,7 @@ export default function About() {
           could not see your files even if we wanted to.
         </p>
         <p>
-          There are no user accounts. Notes, to-do lists and saved calculator inputs are stored in your own browser. We don&apos;t set tracking cookies. The full details are in our{" "}
+          There are no user accounts. Notes, to-do lists and saved calculator inputs are stored in your own browser. We don&apos;t set tracking cookies{adsConfig.enabled ? " ourselves; Google, which shows the ads, may" : ""}. The full details are in our{" "}
           <Link href="/privacy-policy">privacy policy</Link> and <Link href="/cookie-policy">cookie policy</Link>, and our guide on{" "}
           <Link href="/guides/browser-file-processing">how browser-based file processing works</Link> explains the technology in plain language.
         </p>

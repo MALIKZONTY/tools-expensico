@@ -254,7 +254,7 @@ export function NotesApp() {
                     <button role="menuitem" type="button" onClick={() => { setMenuOpen(false); setView(view === "trash" ? "notes" : "trash"); select(null); }} className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm hover:bg-surface-2"><Trash2 aria-hidden className="size-4" /> {view === "trash" ? "Back to notes" : `Trash (${trashCount})`}</button>
                   </div>
                 )}
-                <input ref={importRef} type="file" accept=".json,application/json" className="sr-only" tabIndex={-1} aria-hidden onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ""; if (f) void importFile(f); }} />
+                <input ref={importRef} type="file" accept=".json,application/json" className="sr-only" tabIndex={-1} aria-hidden aria-label="Import notes file" onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ""; if (f) void importFile(f); }} />
               </div>
             </div>
             <div className="relative">
