@@ -12,6 +12,7 @@ export const metadata = pageMetadata({
 export default function CookiePolicy() {
   const turnstile = Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
   const analyticsName = analyticsConfig.provider === "plausible" ? "Plausible" : analyticsConfig.provider === "umami" ? "Umami" : null;
+  const analyticsNames = [analyticsConfig.cloudflare && "Cloudflare Web Analytics", analyticsName].filter(Boolean).join(" and ");
   return (
     <LegalPage
       title="Cookie Policy"
@@ -84,7 +85,7 @@ export default function CookiePolicy() {
               </thead>
               <tbody>
                 <tr><td>Strictly necessary / functional</td><td>Yes — browser storage listed above, no cookies</td></tr>
-                <tr><td>Analytics</td><td>{analyticsName ? `${analyticsName}, which is cookieless and stores nothing in your browser` : "No"}</td></tr>
+                <tr><td>Analytics</td><td>{analyticsNames ? `${analyticsNames}, which ${analyticsName && analyticsConfig.cloudflare ? "are" : "is"} cookieless and store${analyticsName && analyticsConfig.cloudflare ? "" : "s"} nothing in your browser` : "No"}</td></tr>
                 <tr><td>Advertising</td><td>{adsConfig.enabled ? "Yes — Google AdSense (third-party cookies)" : "No"}</td></tr>
                 <tr><td>Social media tracking</td><td>No — we don&apos;t embed social media widgets or pixels</td></tr>
               </tbody>

@@ -10,6 +10,11 @@ function origin(url) {
   }
 }
 
+// Cloudflare Web Analytics: Cloudflare injects this beacon into every page at the edge
+// (Web Analytics "automatic setup"), so the CSP must allow it or browsers block it silently.
+const CF_INSIGHTS_SCRIPT = "https://static.cloudflareinsights.com";
+const CF_INSIGHTS_REPORT = "https://cloudflareinsights.com";
+
 const ADS = [
   "https://pagead2.googlesyndication.com",
   "https://*.googlesyndication.com",
@@ -18,6 +23,8 @@ const ADS = [
   "https://*.gstatic.com",
   "https://adservice.google.com",
   "https://*.adtrafficquality.google",
+  "https://*.googleadservices.com",
+  "https://*.googletagservices.com",
 ];
 
 /**
@@ -34,12 +41,12 @@ export function securityHeaders({ dev = false, env = process.env } = {}) {
 
   const csp = [
     "default-src 'self'",
-    ["script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'", dev && "'unsafe-eval'", analyticsOrigin, turnstile, ...ads].filter(Boolean).join(" "),
+    ["script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'", dev && "'unsafe-eval'", analyticsOrigin, CF_INSIGHTS_SCRIPT, turnstile, ...ads].filter(Boolean).join(" "),
     // https: allows remote images/styles inside the user-controlled HTML preview (off by default there).
     "style-src 'self' 'unsafe-inline' https:",
     "img-src 'self' data: blob: https:",
     "font-src 'self' data: https:",
-    ["connect-src 'self'", processorOrigin, analyticsOrigin, ...ads, dev && "ws:"].filter(Boolean).join(" "),
+    ["connect-src 'self'", processorOrigin, analyticsOrigin, CF_INSIGHTS_REPORT, ...ads, dev && "ws:"].filter(Boolean).join(" "),
     "worker-src 'self' blob:",
     ["frame-src 'self'", turnstile, ...ads].filter(Boolean).join(" "),
     "media-src 'self' data: blob:",

@@ -49,7 +49,7 @@ export const site = {
   sameAs: (env("NEXT_PUBLIC_SAME_AS") ?? "").split(",").map((u) => u.trim()).filter(Boolean),
 
   /** Date the current legal documents took effect (ISO). Update when you change them. */
-  legalEffectiveDate: env("NEXT_PUBLIC_LEGAL_EFFECTIVE_DATE") ?? "2026-10-03",
+  legalEffectiveDate: env("NEXT_PUBLIC_LEGAL_EFFECTIVE_DATE") ?? "2026-10-04",
 } as const;
 
 export const processorConfig = {
@@ -66,6 +66,12 @@ export const analyticsConfig = {
   siteId: env("NEXT_PUBLIC_ANALYTICS_SITE_ID"),
   /** Script URL (self-hosted Plausible/Umami or their cloud). */
   scriptUrl: env("NEXT_PUBLIC_ANALYTICS_SCRIPT_URL"),
+  /**
+   * Cloudflare Web Analytics is switched on in the Cloudflare dashboard and injected at the edge,
+   * not by our code. Page views only — the custom track() events go to the provider above.
+   * Keep in sync with the CSP allowance in security-headers.mjs.
+   */
+  cloudflare: true,
 };
 
 export const adsConfig = {

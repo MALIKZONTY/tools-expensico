@@ -13,6 +13,7 @@ export default function PrivacyPolicy() {
   const contactFormEnabled = site.contactFormEnabled;
   const turnstile = Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
   const analyticsName = analyticsConfig.provider === "plausible" ? "Plausible Analytics" : analyticsConfig.provider === "umami" ? "Umami" : null;
+  const anyAnalytics = Boolean(analyticsName) || analyticsConfig.cloudflare;
 
   return (
     <LegalPage
@@ -36,7 +37,7 @@ export default function PrivacyPolicy() {
               )}
               <tr><td>Notes, to-dos, saved calculator inputs</td><td>No — stored only in your browser</td></tr>
               <tr><td>Name, email or account details</td><td>No accounts; only if you contact us</td></tr>
-              <tr><td>Usage statistics</td><td>{analyticsName ? "Anonymous, cookieless statistics" : "No analytics in use"}</td></tr>
+              <tr><td>Usage statistics</td><td>{anyAnalytics ? "Anonymous, cookieless statistics" : "No analytics in use"}</td></tr>
               <tr><td>Advertising cookies</td><td>{adsConfig.enabled ? "Set by Google AdSense, as described below" : "None — no ads are shown"}</td></tr>
             </tbody>
           </table>
@@ -100,16 +101,28 @@ export default function PrivacyPolicy() {
         {
           id: "analytics",
           title: "Analytics",
-          body: analyticsName ? (
+          body: anyAnalytics ? (
             <>
-              <p>
-                We use {analyticsName}, a privacy-focused analytics service that does not use cookies and does not track you across websites. It tells us which pages are visited and how tools are used,
-                so we can fix problems and decide what to build next.
-              </p>
-              <p>
-                In addition to page views, our tools send a small number of anonymous events: when a tool is opened, when a conversion starts, completes or fails (with the tool name and a broad file
-                size range such as &ldquo;1–10 MB&rdquo;), and the words typed into our site search box (so we can learn which tools people look for). Apart from search terms, we never send text you enter — no file names, file contents, note text or form inputs — and nothing that identifies you.
-              </p>
+              {analyticsConfig.cloudflare && (
+                <p>
+                  We use <strong>Cloudflare Web Analytics</strong> to count page views. It does not use cookies or browser storage, does not fingerprint your device, and does not track you across
+                  websites. It records the page address, the referring site, your browser and device type, your country (worked out from your IP address, which is not stored), and how quickly the page
+                  loaded. We see this only as totals, never as a record of an individual visitor. See{" "}
+                  <a href="https://www.cloudflare.com/web-analytics/" rel="noopener noreferrer">cloudflare.com/web-analytics</a> for details.
+                </p>
+              )}
+              {analyticsName && (
+                <>
+                  <p>
+                    We {analyticsConfig.cloudflare ? "also use" : "use"} {analyticsName}, a privacy-focused analytics service that does not use cookies and does not track you across websites. It tells us which pages are visited and how tools are used,
+                    so we can fix problems and decide what to build next.
+                  </p>
+                  <p>
+                    In addition to page views, our tools send a small number of anonymous events: when a tool is opened, when a conversion starts, completes or fails (with the tool name and a broad file
+                    size range such as &ldquo;1–10 MB&rdquo;), and the words typed into our site search box (so we can learn which tools people look for). Apart from search terms, we never send text you enter — no file names, file contents, note text or form inputs — and nothing that identifies you.
+                  </p>
+                </>
+              )}
             </>
           ) : (
             <p>We currently do not use any analytics service. If we add one, it will be a privacy-focused, cookieless service, and we will update this policy before enabling it.</p>
