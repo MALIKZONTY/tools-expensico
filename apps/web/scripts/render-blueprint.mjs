@@ -20,6 +20,8 @@ const blueprintPath = join(root, "render.yaml");
 const PUBLIC_ENV = {
   NODE_VERSION: "22.22.2",
   COREPACK_ENABLE_DOWNLOAD_PROMPT: "0",
+  // Render's own install runs `pnpm install --prod false`, which pnpm 12 rejects; buildCommand installs.
+  SKIP_INSTALL_DEPS: "true",
   NEXT_PUBLIC_SITE_URL: "https://expensico.com",
 };
 /** Set in the Render dashboard when the Blueprint is created (they don't affect headers). */

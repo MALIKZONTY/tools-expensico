@@ -20,6 +20,8 @@ services:
         value: 22.22.2
       - key: COREPACK_ENABLE_DOWNLOAD_PROMPT
         value: '0'
+      - key: SKIP_INSTALL_DEPS
+        value: 'true'
       - key: NEXT_PUBLIC_SITE_URL
         value: https://expensico.com
       - key: NEXT_PUBLIC_OPERATOR_COUNTRY
