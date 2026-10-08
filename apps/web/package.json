@@ -14,7 +14,8 @@
     "test:e2e": "playwright test",
     "check:launch": "node scripts/check-launch-config.mjs",
     "icons": "node scripts/generate-icons.mjs",
-    "postbuild": "node scripts/cloudflare-files.mjs",
+    "postbuild": "node scripts/cloudflare-files.mjs && node scripts/render-blueprint.mjs",
+    "render:blueprint": "node scripts/render-blueprint.mjs --write",
     "preview": "wrangler dev",
     "deploy": "wrangler deploy"
   },

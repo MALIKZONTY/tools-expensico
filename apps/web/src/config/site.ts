@@ -72,6 +72,11 @@ export const analyticsConfig = {
    * Keep in sync with the CSP allowance in security-headers.mjs.
    */
   cloudflare: true,
+  /**
+   * Off Cloudflare's proxy (e.g. on Render) the beacon isn't injected; set this token (Web Analytics →
+   * site → manual setup) and AnalyticsScript loads it instead.
+   */
+  cloudflareToken: env("NEXT_PUBLIC_CF_ANALYTICS_TOKEN"),
 };
 
 export const adsConfig = {
