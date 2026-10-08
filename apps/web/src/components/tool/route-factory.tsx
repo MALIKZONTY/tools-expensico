@@ -11,8 +11,8 @@ type Params = { params: Promise<{ slug: string }> };
 
 /**
  * Builds the static route handlers for /<category>/<slug>. Alternative URLs (a tool listed in
- * several categories, legacy aliases) are not pages: they become 301s in Cloudflare's
- * `_redirects`, generated from the registry via app/redirects.txt.
+ * several categories, legacy aliases) are not pages: they become 301s in next.config.ts,
+ * generated from the registry by toolRedirects().
  */
 export function makeToolRoute(categoryId: CategoryId) {
   const category = getCategory(categoryId);

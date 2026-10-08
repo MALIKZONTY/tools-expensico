@@ -1,6 +1,4 @@
-// Security headers, shared by next.config.ts (dev server) and scripts/cloudflare-files.mjs,
-// which writes them to Cloudflare's `_headers` file for the static export. Plain .mjs with no
-// imports so both can load it (Next's config loader mis-resolves path aliases).
+// Security headers and fixed redirects, served by next.config.ts. Plain .mjs with no imports.
 
 function origin(url) {
   try {
@@ -10,8 +8,7 @@ function origin(url) {
   }
 }
 
-// Cloudflare Web Analytics: Cloudflare injects this beacon into every page at the edge
-// (Web Analytics "automatic setup"), so the CSP must allow it or browsers block it silently.
+// Cloudflare Web Analytics beacon (AnalyticsScript.tsx), loaded when NEXT_PUBLIC_CF_ANALYTICS_TOKEN is set.
 const CF_INSIGHTS_SCRIPT = "https://static.cloudflareinsights.com";
 const CF_INSIGHTS_REPORT = "https://cloudflareinsights.com";
 
@@ -37,16 +34,17 @@ export function securityHeaders({ dev = false, env = process.env } = {}) {
   const processorOrigin = origin(env.NEXT_PUBLIC_PROCESSOR_URL);
   const analyticsOrigin = origin(env.NEXT_PUBLIC_ANALYTICS_SCRIPT_URL) ?? (env.NEXT_PUBLIC_ANALYTICS_PROVIDER === "plausible" ? "https://plausible.io" : null);
   const ads = env.NEXT_PUBLIC_ADSENSE_CLIENT ? ADS : [];
+  const cfInsights = env.NEXT_PUBLIC_CF_ANALYTICS_TOKEN?.trim() ? [CF_INSIGHTS_SCRIPT, CF_INSIGHTS_REPORT] : [];
   const turnstile = env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ? "https://challenges.cloudflare.com" : null;
 
   const csp = [
     "default-src 'self'",
-    ["script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'", dev && "'unsafe-eval'", analyticsOrigin, CF_INSIGHTS_SCRIPT, turnstile, ...ads].filter(Boolean).join(" "),
+    ["script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'", dev && "'unsafe-eval'", analyticsOrigin, cfInsights[0], turnstile, ...ads].filter(Boolean).join(" "),
     // https: allows remote images/styles inside the user-controlled HTML preview (off by default there).
     "style-src 'self' 'unsafe-inline' https:",
     "img-src 'self' data: blob: https:",
     "font-src 'self' data: https:",
-    ["connect-src 'self'", processorOrigin, analyticsOrigin, CF_INSIGHTS_REPORT, ...ads, dev && "ws:"].filter(Boolean).join(" "),
+    ["connect-src 'self'", processorOrigin, analyticsOrigin, cfInsights[1], ...ads, dev && "ws:"].filter(Boolean).join(" "),
     "worker-src 'self' blob:",
     ["frame-src 'self'", turnstile, ...ads].filter(Boolean).join(" "),
     "media-src 'self' data: blob:",
@@ -55,7 +53,6 @@ export function securityHeaders({ dev = false, env = process.env } = {}) {
     "form-action 'self'",
     "frame-ancestors 'none'",
     // No upgrade-insecure-requests: every resource is same-origin and HSTS already forces HTTPS.
-    // (Locally it upgraded Cloudflare's same-origin asset redirects to https://localhost, which hangs.)
   ]
     .filter(Boolean)
     .join("; ");
@@ -71,7 +68,7 @@ export function securityHeaders({ dev = false, env = process.env } = {}) {
   ];
 }
 
-/** Fixed redirects; tool alias redirects come from the registry (see app/redirects.txt). */
+/** Fixed redirects; tool alias redirects come from the registry (toolRedirects in src/registry/tools.ts). */
 export const STATIC_REDIRECTS = [
   { source: "/privacy", destination: "/privacy-policy" },
   { source: "/terms-of-service", destination: "/terms" },

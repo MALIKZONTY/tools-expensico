@@ -22,9 +22,7 @@ export function rateLimit(key: string, limit: number, windowMs: number): { ok: b
 }
 
 export function clientIp(req: Request): string {
-  // Cloudflare sets CF-Connecting-IP to the real visitor address (X-Forwarded-For can be spoofed).
-  const cf = req.headers.get("cf-connecting-ip");
-  if (cf) return cf.trim();
+  // Vercel overwrites X-Forwarded-For with the real visitor address, so clients can't spoof it.
   const fwd = req.headers.get("x-forwarded-for");
   return (fwd?.split(",")[0] ?? req.headers.get("x-real-ip") ?? "unknown").trim();
 }

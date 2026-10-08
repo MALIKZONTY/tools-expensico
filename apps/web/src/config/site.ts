@@ -67,11 +67,14 @@ export const analyticsConfig = {
   /** Script URL (self-hosted Plausible/Umami or their cloud). */
   scriptUrl: env("NEXT_PUBLIC_ANALYTICS_SCRIPT_URL"),
   /**
-   * Cloudflare Web Analytics is switched on in the Cloudflare dashboard and injected at the edge,
-   * not by our code. Page views only — the custom track() events go to the provider above.
-   * Keep in sync with the CSP allowance in security-headers.mjs.
+   * Cloudflare Web Analytics beacon token (Cloudflare dashboard → Web Analytics → site → manual
+   * setup). Page views only — the custom track() events go to the provider above. The CSP in
+   * security-headers.mjs allows the beacon only when this is set.
    */
-  cloudflare: true,
+  cloudflareToken: env("NEXT_PUBLIC_CF_ANALYTICS_TOKEN"),
+  get cloudflare() {
+    return Boolean(this.cloudflareToken);
+  },
 };
 
 export const adsConfig = {

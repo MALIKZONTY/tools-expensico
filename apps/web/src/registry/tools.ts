@@ -1,11 +1,13 @@
 /**
  * Tool registry — metadata only (no React, no browser APIs).
  *
- * Imported by routes, the sitemap, next.config redirects, the search index and tests.
+ * Imported by routes, the sitemap, next.config redirects, the search index and tests. next.config
+ * loads this file and its imports outside the bundler, where `@/` aliases don't resolve: use
+ * relative imports here and in lib/convert/catalog.ts and config/site.ts.
  * UI lives in registry/components.ts (client) and content in registry/content.ts (server).
  */
 
-import { CONVERSIONS, isConversionAvailable, type ConversionDef } from "@/lib/convert/catalog";
+import { CONVERSIONS, isConversionAvailable, type ConversionDef } from "../lib/convert/catalog";
 import { getCategory, type CategoryId } from "./categories";
 
 /**

@@ -14,9 +14,8 @@ export default defineConfig({
     { name: "mobile-chromium", use: { ...devices["Pixel 7"] }, grep: /@mobile/ },
   ],
   webServer: {
-    // Serves out/ exactly as Cloudflare does (static assets + _headers/_redirects + /api Worker).
-    // Run `pnpm build` first.
-    command: `pnpm exec wrangler dev --port ${PORT} --ip 127.0.0.1`,
+    // Production server, as on Vercel (headers, redirects, /api). Run `pnpm build` first.
+    command: `pnpm exec next start --port ${PORT}`,
     url: `http://localhost:${PORT}`,
     reuseExistingServer: true,
     timeout: 120_000,

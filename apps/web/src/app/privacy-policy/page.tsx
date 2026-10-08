@@ -170,7 +170,7 @@ export default function PrivacyPolicy() {
           title: "Hosting and server logs",
           body: (
             <p>
-              The website is hosted by Cloudflare{processorConfig.enabled ? ", and our file-processing service runs on a separate cloud provider" : ""}. Like any web server, our hosting providers automatically
+              The website is hosted by Vercel{processorConfig.enabled ? ", and our file-processing service runs on a separate cloud provider" : ""}. Like any web server, our hosting providers automatically
               process technical information such as your IP address, browser type and the pages requested, to deliver the site and protect it from abuse. These logs are kept for a limited period under the
               providers&apos; own policies. Fonts and website code are served from our own domain; we don&apos;t load fonts from third-party font services.
             </p>

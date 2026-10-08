@@ -8,7 +8,7 @@
  * Pure data only — implementations are wired up in ./implementations.ts (client side).
  */
 
-import { processorConfig } from "@/config/site";
+import { processorConfig } from "../../config/site";
 import type { FormatId } from "./formats";
 
 export type ConversionEngine = "browser" | "server";

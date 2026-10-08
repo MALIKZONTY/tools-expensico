@@ -1,54 +1,63 @@
 # Deployment
 
-## 1. Web app → Cloudflare Workers (free plan, ads allowed)
+## 1. Web app → Vercel
 
-The site is a static export (`apps/web/out`) served by Workers static assets, plus a tiny Worker
-for `/api/*`. See ARCHITECTURE.md §11.
+Every page is prerendered at build time; only `/api/*` (contact form, processor tokens) runs as
+functions. See ARCHITECTURE.md §11.
 
-### One-time: put the domain on Cloudflare
-1. dash.cloudflare.com → **Add a domain** → `expensico.com` → **Free** plan.
-2. At your registrar, replace the nameservers with the two Cloudflare gives you. Wait until the
-   domain shows **Active** (minutes to a few hours).
-
-### Create the Worker from GitHub (Workers Builds)
-1. **Workers & Pages** → **Create** → **Import a repository** → choose `tools-expensico`.
-2. **Project name:** `expensico` (must match `name` in `apps/web/wrangler.jsonc`).
-3. **Build settings:**
-   - Root directory: `apps/web`
-   - Build command: `pnpm build`
-   - Deploy command: `npx wrangler deploy`
-4. **Build variables** (used at build time, compiled into the pages):
+### Create the project
+1. vercel.com → **Add New → Project** → import `tools-expensico` from GitHub.
+2. **Root Directory:** `apps/web`. Framework preset: **Next.js** (detected). Leave the build
+   command and output directory at their defaults; Vercel reads pnpm's version from `packageManager`.
+3. **Environment Variables** (Production and Preview). `NEXT_PUBLIC_*` values are compiled into the
+   pages, so changing one needs a redeploy:
 
    | Variable | Value |
    | --- | --- |
-   | `PNPM_VERSION` | `12.3.4` (the build image defaults to pnpm 10) |
    | `NEXT_PUBLIC_SITE_URL` | `https://expensico.com` |
    | `NEXT_PUBLIC_OPERATOR_COUNTRY` | e.g. `India` |
    | `NEXT_PUBLIC_LEGAL_JURISDICTION` | e.g. `India, with courts in <city>` |
    | `NEXT_PUBLIC_LEGAL_EFFECTIVE_DATE` | launch date, `YYYY-MM-DD` |
+   | `NEXT_PUBLIC_CF_ANALYTICS_TOKEN` | Cloudflare Web Analytics token, if you keep using it (below) |
    | `NEXT_PUBLIC_ADSENSE_CLIENT` | `ca-pub-…` once AdSense approves the site (also generates `ads.txt`) |
 
-   The operator name and contact email default to `src/config/site.ts`. Changing a build variable
-   needs a new deployment (Deployments → Retry, or push a commit).
-5. **Deploy.** The site appears at `expensico.<account>.workers.dev`.
+   Copy any other variables and secrets you had on the Cloudflare Worker (contact form, processor,
+   Turnstile, analytics provider).
+4. **Region:** Project → Settings → Functions → **Mumbai (bom1)**, so the API functions run close to
+   visitors. Pages are served from Vercel's edge regardless.
+5. **Deploy.** The site appears at `<project>.vercel.app`.
 
-### Connect the domain
-1. Worker **expensico** → **Settings → Domains & Routes → Add → Custom domain**: `expensico.com`,
-   then again for `www.expensico.com`.
-2. **Rules → Redirect Rules → Create from template → "Redirect from WWW to root"** (301), so
-   `NEXT_PUBLIC_SITE_URL` is the one canonical host.
-3. Leave **Bot Fight Mode** off and never use "I'm Under Attack" mode for normal traffic; Googlebot
-   and the AdSense crawler must be able to fetch every page.
+### Check before moving the domain
+On the networks your visitors use (Jio, Airtel), open the `*.vercel.app` URL and confirm it's fast.
+Spot-check a few pages, a redirect (`/privacy` → 301 → `/privacy-policy`) and a tool alias.
+
+### Move the domain
+1. Vercel project → **Settings → Domains** → add `expensico.com` and `www.expensico.com` (set
+   `www` to redirect to the apex, 301).
+2. If DNS stays on Cloudflare: in Cloudflare DNS, remove the Worker's custom domains, then add the
+   records Vercel shows (A `@` → `76.76.21.21`, CNAME `www` → `cname.vercel-dns.com`) with the proxy
+   **off (DNS only, grey cloud)**. Proxying through Cloudflare would bring back the slow routing.
+   If you move the nameservers to Vercel instead, first copy every record you need, including the
+   `google-site-verification` TXT record (Search Console) and any email records.
+3. Once Vercel shows the domain as valid, disconnect the Cloudflare Worker's GitHub builds (or
+   delete the Worker) so pushes don't fail there.
+
+Search Console needs no changes: the domain property is verified by the DNS TXT record, and URLs,
+the sitemap and redirects are unchanged.
+
+### Cloudflare Web Analytics (optional)
+Cloudflare used to inject the beacon at the edge. With DNS-only records it no longer can, so set it
+up manually: Cloudflare dashboard → **Web Analytics** → the site → **Manage site** → copy the token
+from the JS snippet into `NEXT_PUBLIC_CF_ANALYTICS_TOKEN`. The CSP and privacy/cookie policies
+include Cloudflare Web Analytics only while the token is set.
 
 ### Local check before deploying
-`pnpm build && pnpm preview` serves `out/` with Cloudflare's runtime on http://localhost:8787,
-including `_headers`, `_redirects` and the `/api` Worker. `pnpm test:e2e` runs the browser tests
-against the same setup.
+`pnpm build && pnpm start` serves the production build, with the same headers, redirects and
+`/api` routes as Vercel. `pnpm test:e2e` runs the browser tests against it.
 
 ### Contact form
 Create a [Resend](https://resend.com) account and verify `expensico.com` as a sending domain. Add
-`RESEND_API_KEY` and `CONTACT_FROM_EMAIL` as **Worker secrets** (Worker → Settings → Variables &
-Secrets), then set the build variable `NEXT_PUBLIC_CONTACT_FORM=true` and redeploy. Messages go to the site contact email
+`RESEND_API_KEY` and `CONTACT_FROM_EMAIL` as Vercel environment variables, then set the build variable `NEXT_PUBLIC_CONTACT_FORM=true` and redeploy. Messages go to the site contact email
 (`malikantuparthi@gmail.com`, set in `src/config/site.ts`) unless `CONTACT_TO_EMAIL` overrides it.
 Until then the form is hidden and the page shows the contact email instead. Optionally add Cloudflare Turnstile keys.
 The built-in rate limiter is per server instance; add a shared store (e.g. Upstash) if you see abuse.
@@ -67,8 +76,8 @@ Enables Word/Excel/PowerPoint → PDF and server-side PDF compression.
 2. In Render, create a Blueprint from `render.yaml` (Docker, built from the repo root). Use a plan
    with at least 1 GB RAM — LibreOffice won't run on the free tier. Set `PROCESSOR_SHARED_SECRET`
    and `ALLOWED_ORIGINS`.
-3. In Cloudflare set the build variable `NEXT_PUBLIC_PROCESSOR_URL` (the processor URL) and the
-   Worker secret `PROCESSOR_SHARED_SECRET` (same value), then redeploy. The server conversions and their landing pages (`/convert/docx-to-pdf`, …)
+3. In Vercel set `NEXT_PUBLIC_PROCESSOR_URL` (the processor URL) and `PROCESSOR_SHARED_SECRET`
+   (same value), then redeploy. The server conversions and their landing pages (`/convert/docx-to-pdf`, …)
    appear only now, and the privacy policy switches to describing them.
 
 Security model: the browser gets a 5-minute HMAC token for one operation from

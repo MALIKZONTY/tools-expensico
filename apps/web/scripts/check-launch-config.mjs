@@ -5,8 +5,8 @@ const required = [
   ["NEXT_PUBLIC_LEGAL_EFFECTIVE_DATE", "Effective date of your legal documents (YYYY-MM-DD)"],
 ];
 const recommended = [
-  ["RESEND_API_KEY", "Worker secret for the contact form (with CONTACT_FROM_EMAIL, then build var NEXT_PUBLIC_CONTACT_FORM=true)"],
-  ["CONTACT_FROM_EMAIL", "Worker secret: verified sender address for contact-form emails"],
+  ["RESEND_API_KEY", "Server env var for the contact form (with CONTACT_FROM_EMAIL, then build var NEXT_PUBLIC_CONTACT_FORM=true)"],
+  ["CONTACT_FROM_EMAIL", "Server env var: verified sender address for contact-form emails"],
   ["NEXT_PUBLIC_ANALYTICS_PROVIDER", "Cookieless analytics (plausible or umami)"],
 ];
 const optional = [

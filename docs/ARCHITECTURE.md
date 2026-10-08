@@ -7,7 +7,7 @@ It is the reference for anyone adding a tool, a converter or an infrastructure c
 
 | Decision | Choice |
 | --- | --- |
-| Frontend hosting | Cloudflare Workers: Next.js static export (`out/`) on static assets; a small Worker for `/api/*` only |
+| Frontend hosting | Vercel: every page prerendered at build time; Route Handlers for `/api/*` only |
 | File processing | Hybrid: browser first; heavy conversions on a separate Docker service (Render-ready) |
 | Finance locale | India-first (₹, lakh/crore grouping, EPF, GST, Indian income tax) |
 | Analytics | Cookieless (Plausible or Umami), behind a provider-neutral `track()` |
@@ -76,7 +76,7 @@ Tool UI ──► runConversion(converter, files, options)
               │                        mammoth, canvas). Files never leave the device.
               │
               └─ engine: "server"  ─► RemoteProcessingEngine
-                                       1. POST /api/processing-token (Worker, src/worker.ts) → short-lived HMAC token
+                                       1. POST /api/processing-token (Route Handler) → short-lived HMAC token
                                        2. POST {PROCESSOR_URL}/v1/process (multipart, direct to Render)
                                        3. processor validates, converts in a per-job temp dir, deletes it
 ```
@@ -155,15 +155,16 @@ Cloud sync later: add a `RemoteNotesRepository` and a sync engine that reconcile
 - Playwright: smoke tests for key workflows and responsive checks at 320 / 375 / 390 / 430 / 768 /
   1024 / 1440 px (no horizontal overflow, header usable, tool usable).
 
-## 11. Hosting (Cloudflare Workers)
+## 11. Hosting (Vercel)
 
-- `next build` produces a static export in `out/` (`output: "export"`). Every page, the sitemap,
-  robots.txt, the search index and the Open Graph image are files; no server rendering happens
-  at request time, so the Workers Free plan's 10 ms CPU limit never applies to pages.
-- `scripts/cloudflare-files.mjs` (postbuild) writes `out/_headers` (security headers from
-  `security-headers.mjs`), `out/_redirects` (301s for tool aliases from the registry) and
-  `out/ads.txt` (only when `NEXT_PUBLIC_ADSENSE_CLIENT` is set).
-- `src/worker.ts` runs only for `/api/*` (`run_worker_first`): the contact form and processor
-  tokens (`src/server/api/*`). Everything else is served straight from static assets.
-- OpenNext was evaluated and rejected: with @opennextjs/cloudflare 1.20.7 and Next 16.3 every
-  page missed the incremental cache and was server-rendered per request (over the free CPU limit).
+- Moved from Cloudflare Workers (static export) to Vercel in October 2026: on Reliance Jio,
+  Cloudflare free-plan traffic was routed to distant colos (Tokyo) with heavy packet loss, so the
+  site was very slow for a large share of Indian visitors.
+- Every page, the sitemap, robots.txt, the search index and the Open Graph image are prerendered
+  at build time (`dynamicParams = false` on `[slug]` routes, so unknown slugs get the static 404).
+- `next.config.ts` serves the security headers (`security-headers.mjs`) and the 301s: fixed ones
+  plus tool aliases from `toolRedirects()` in the registry. next.config loads the registry outside
+  the bundler, so that import chain uses relative paths, not `@/`.
+- `src/app/api/*/route.ts` re-export the handlers in `src/server/api/*` (contact form, processor
+  tokens); they are the only functions that run per request.
+- `scripts/ads-txt.mjs` (prebuild) writes `public/ads.txt` only when `NEXT_PUBLIC_ADSENSE_CLIENT` is set.
